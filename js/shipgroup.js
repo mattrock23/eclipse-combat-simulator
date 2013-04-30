@@ -1,0 +1,2 @@
+idCounter = 0;
+

@@ -1,0 +1,50 @@
+#shipgroupform, #commandstrip, #results {
+	width: 600px;
+	border: 3px solid #000;
+	padding: 5px;
+	float: left;
+	margin-bottom: 5px;
+}
+#run {
+	float: right;
+}
+.offensivestats {
+	float: left;
+}
+.defensivestats {
+	float: right;
+	text-align: right;
+}
+#extras {
+	clear: both;
+}
+#add {
+	clear: both;
+	margin-right: auto;
+	margin-left: auto;
+	max-width: 120px;
+}
+#results {
+	height: 200px;
+	display: none;
+	position: relative;
+}
+.icon {
+	width: 50px;
+	height: 50px;
+	float: left;
+	margin-right: 5px;
+}
+#buttonbox {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+#queue {
+	border: 3px solid #000;
+	margin-left: 620px;
+}
+#queue div {
+	border: 1px solid #000;
+	margin: 2px;
+}
