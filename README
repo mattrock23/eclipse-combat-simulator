@@ -1,1 +1,9 @@
-Hello World
+This app keeps track of all the details that go into the combat stage in the space exploration board game Eclipse.
+
+Features I'd like to add soon:
+Telling you whether a dice can count as a hit
+Missles
+Rare Techs
+
+Usage Notes:
+You have to drag a dice to a ship in order to damage it. If you just hit next, the damage is gone.
