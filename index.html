@@ -7,11 +7,11 @@
         <link rel="stylesheet" href="simulator.css" />
 	</head>
 	<body>
-		<div id="commandstrip">
+		<nav id="commandstrip">
 			<button id="reset">Reset Simulation</button>
 			<button id="run" disabled>Run Simulation</button>
-		</div>
-		<div id="shipgroupform">
+		</nav>
+		<section id="shipgroupform">
 			<select id="type">
 				<option>Intercepter</option>
 				<option>Cruiser</option>
@@ -44,8 +44,8 @@
 				Point Defense <input type="checkbox" id="point_defense"value="Point Defense" />
 			</div>-->
 			<div id="add"><button id="addbutton">Add Ship Group</button></div>
-		</div>
-		<div id="results">
+		</section>
+		<section id="results">
 			Results:
 			<div id="dicebox"></div>
 			<span id="buttonbox">
@@ -53,10 +53,10 @@
 				<button id="fire">Fire!</button>
 				<button id="next">Next</button>
 			</span>
-		</div>
-		<div id="queue">
+		</section>
+		<section id="queue">
 			Queue:
-		</div>
+		</section>
 		<script src="../jquery-1.9.1.js"></script>
         <script src="js/simulator.js"></script>
         <script src="js/jquery-ui-1.10.2.custom.min.js"></script>
