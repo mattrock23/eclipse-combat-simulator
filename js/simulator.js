@@ -1,4 +1,5 @@
 $(function () {
+	"use strict";
 	function ShipGroup(type, side, initiative, quantity, cannons, missiles, computers, hulls, shields, extras) {
 		this.type = type;
 		this.side = side;
@@ -18,11 +19,11 @@ $(function () {
 			this.initiative.toString() + " initiative, " + this.cannons.join(", ") + /*", " + this.missiles.join(", ") + */", +" + 
 			this.computers.toString() + " computers, " + this.hulls.toString() + " hull(s), -" + this.shields.toString() + 
 			" shields.<br />"/* + (this.extras.join() || "and no extras") + ". "*/;
-	}
+	};
 	ShipGroup.prototype.makeDiv = function() {
 		//return html representation of this shipgroup, id of the div should be the ship's id
-	}
-	ShipGroup.prototype.loadWeapons = function(kind) {
+	};
+	ShipGroup.prototype.loadWeapons = function() {
 		//check if its still missile round
 		//if so load the missiles of the first shipgroup in the missilebattle array
 		//if not, load the cannons of the first shipgroup in the regular battle array
@@ -30,9 +31,8 @@ $(function () {
 		//display weapon icons
 		$("#dicebox").empty();
 		for (var i = 0; i < this.quantity; i++) {
-			this.cannons.forEach(function(x) {
-				//case variable and form values can be replaced with numeric values once the shipgroup.toString is no longer used
-				switch (x) {
+			for (var j = 0; j < this.cannons.length; j++) {
+				switch (this.cannons[j]) {
 					case "Ion Cannon":
 						$("<div class='icon' />").css('background-image', 'url(img/ion-icon.png)').appendTo("#dicebox");
 						break;
@@ -43,7 +43,7 @@ $(function () {
 						$("<div class='icon' />").css('background-image', 'url(img/antimatter-icon.png)').appendTo("#dicebox");
 						break;
 				}
-			});
+			}
 		}
 		//show which shipgroup is active in the queue
 		$("#queue div").css('border', '1px solid #000');
@@ -51,7 +51,7 @@ $(function () {
 		//prompt retreat or fire
 		$("#fire").add("#retreat").show();
 		$("#next").hide();
-	}
+	};
 	ShipGroup.prototype.fireWeapons = function() {
 		//check if it's still the missile round
 		//fire the appropriate weapon type for each ship each weapon
@@ -59,12 +59,15 @@ $(function () {
 		$("#dicebox").empty();
 		for (var i = 0; i < this.quantity; i++) {
 			var self = this;
-			this.cannons.forEach(function(x) {
+			for (var j = 0; j < this.cannons.length; j++) {
 				var face = Math.floor(1+Math.random()*6);
 				var value;
-				if (face == 6) value = "N6"
-					else value = face + Number(self.computers);
-				switch (x) {
+				if (face === 6) {
+					value = "N6";
+				} else {
+					value = face + Number(self.computers);
+				}
+				switch (this.cannons[j]) {
 					case "Ion Cannon":
 						$("<div class='icon' />")
 							.css('background-image', 'url(img/dice/ion-' + face + '.png)')
@@ -87,7 +90,7 @@ $(function () {
 							.appendTo("#dicebox");
 						break;
 				}
-			});
+			}
 		}
 		//make only enemy shipgroups droppable
 		$("#queue div").droppable('disable');
@@ -105,37 +108,39 @@ $(function () {
 		//if it's the missile round, just take the first element off
 		//take element off the battle array and put it back on at the end
 		battle.push(battle.shift());
-	}
+	};
 	ShipGroup.prototype.getIndex = function() {
 		return battle.indexOf(this);
-	}
+	};
 	ShipGroup.prototype.getEnemies = function() {
 		//returns an array with the ids of enemy shipgroups
 		var result = [];
 		var self = this;
 		battle.forEach(function(x) {
-			if (x.side != self.side) result.push(x.id);
+			if (x.side !== self.side) {
+				result.push(x.id);
+			}
 		});
 		return result;
-	}
-
+	};
 	function makeDropdown(event) {
 		//make select elements to select weapons
 		if (event.data.missle === 1) {
-			$("#computercontainer").before("<select class='missile'>\
-				<option value='Flux Missle'>Flux Missle</option>\
-				<option value='Plasma Missle'>Plasma Missle</option>\
-				</select><br />");
+			$("#computercontainer").before("<select class='missile'>" + 
+				"<option value='Flux Missle'>Flux Missle</option>" + 
+				"<option value='Plasma Missle'>Plasma Missle</option>" + 
+				"</select><br />");
 		} else {
-			$("#computercontainer").before("<select class='cannon'>\
-				<option value='Ion Cannon'>Ion Connon</option>\
-				<option value='Plasma Cannon'>Plasma Cannon</option>\
-				<option value='Antimatter Cannon'>Antimatter Cannon</option>\
-				</select><br />");
+			$("#computercontainer").before("<select class='cannon'>" + 
+				"<option value='Ion Cannon'>Ion Connon</option>" + 
+				"<option value='Plasma Cannon'>Plasma Cannon</option>" + 
+				"<option value='Antimatter Cannon'>Antimatter Cannon</option>" + 
+				"</select><br />");
 		}
 		return false;
 	}
-	function addShipGroup(event) {
+
+	function addShipGroup() {
 		//validateInput();
 		var cannons = [];
 		var missiles = [];
@@ -153,7 +158,6 @@ $(function () {
 			cannons, missiles, $("#computers").val(), $("#hulls").val(), $("#shields").val(), extras);
 		battle.push(ships);
 		battle.sort(firingOrder);
-		console.log(battle);
 		//create the visual display of the shipgroups
 		$("#queue").empty().append("Queue:");
 		battle.forEach(function(x) {
@@ -166,7 +170,7 @@ $(function () {
 			drop: function(event, ui) {
 				//determine if the shot can hit the shipgroup it was dropped on
 				//the accuracy field within each draggable already includes computers
-				if (ui.draggable.find("input.accuracy").val() - $(this).find("input").val() >= 6 || ui.draggable.find("input.accuracy").val() == "N6") {
+				if (ui.draggable.find("input.accuracy").val() === "N6" || ui.draggable.find("input.accuracy").val() - $(this).find("input").val() >= 6) {
 					//display that the shot has been assigned and make it not draggable anymore
 					ui.draggable.css("border", "1px solid #000").addClass("assigned").draggable('disable');
 					//display the damage assigned
@@ -194,8 +198,12 @@ $(function () {
 	}
 	//firing order is determined by initiative. Ties go to the defenders
 	function firingOrder(a, b) {
-		if (a.initiative < b.initiative) return 1;
-		if (a.initiative > b.initiative) return -1;
+		if (a.initiative < b.initiative) {
+			return 1;
+		}
+		if (a.initiative > b.initiative) {
+			return -1;
+		}
 		if (a.initiative === b.initiative) {
 			if (a.side === "Defending") {
 				return -1;
@@ -205,9 +213,9 @@ $(function () {
 		}
 		return 0;
 	}
-	function validateInput() {
+	/*function validateInput() {
 		//validate ship group form before adding it to the array and the queue
-	}
+	}*/
 	function initializeSimulation() {
 		$("#shipgroupform").slideUp();
 		$("#results").slideDown();
@@ -243,24 +251,28 @@ $(function () {
 	function getShipgroupById(id) {
 		var ship;
 		battle.forEach(function(x) {
-			if (x.id == id) ship = x;
+			if (x.id === parseInt(id)) {
+				ship = x;
+			}
 		});
 		return ship;
 	}
 	function checkForEnemies() {
-		if (!battle[0].getEnemies.length) alert("Winner! You may continue to roll for neutron bombs if applicable.");
+		if (!battle[0].getEnemies.length) {
+			window.alert("Winner! You may continue to roll for neutron bombs if applicable.");
+		}
 	}
 
 	var battle = [];
-	var missileBattle = [];
-	var missileRound = true;
+	//var missileBattle = [];
+	//var missileRound = true;
 	var idCounter = 0;
-	$("#reset").click(function() {location.reload()});
+	$("#reset").click(function() {location.reload();});
 	$("#addbutton").click(addShipGroup);
 	$("#run").click(initializeSimulation);
 	$("#addcannon").click({missle: 0}, makeDropdown);
 	//$("#addmissle").click({missle: 1}, makeDropdown);
-	$("#fire").click(function() {battle[0].fireWeapons()});
+	$("#fire").click(function() {battle[0].fireWeapons();});
 	$("#retreat").click(setRetreat);
 	$("#next").click(step);
 });
